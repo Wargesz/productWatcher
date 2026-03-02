@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "productWatcher",
+  "version": "0.1",
+  "description": "opens products in new tabs with provided sale name",
+  "icons": {
+    "48": "icons/border-48.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.emag.hu/*",
+        "*://*.arukereso.hu/*"
+      ],
+      "js": [
+        "main.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "*://www.emag.hu/*",
+    "*://*.arukereso.hu/*"
+  ],
+  "browser_specific_settings": {
+      "gecko": {
+          "update_url": "https://wargesz.chickenkiller.com/archives/product-watcher.json"
+      }
+  }
+}
