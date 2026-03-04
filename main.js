@@ -35,7 +35,7 @@ function emag() {
 	div.append(input);
 	if (globalThis.location.href.includes('/pd/')) {
 		const data = document.createElement('button');
-		data.innerText = 'Copy data';
+		data.innerText = 'Adat másol';
 		data.addEventListener('click', () => {
 			const s = document.querySelector('h1.page-title').innerText + '\t'
 				+ globalThis.location.href + '\t'
@@ -55,7 +55,7 @@ function emag() {
 				window.open(e.parentElement.parentElement.parentElement.parentElement.href + '?watcher=y');
 			}
 		});
-		button.innerText = 'Open all';
+		button.innerText = 'Mind megnyit';
 		div.append(button);
 	}
 
@@ -79,7 +79,7 @@ function arukereso() {
 	div.id = 'producter';
 	const button = document.createElement('button');
 	button.addEventListener('click', evalProduts);
-	button.innerText = 'eval';
+	button.innerText = 'Mind megnyit';
 	div.append(button);
 	document.querySelector('body').append(div);
 	const sites = 'alza.hu emag mediamarkt euronics.hu auchan pepita.hu bestbyte';
