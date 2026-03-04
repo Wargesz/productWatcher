@@ -4,7 +4,7 @@
   "version": "0.1",
   "description": "opens products in new tabs with provided sale name",
   "icons": {
-    "48": "icons/border-48.png"
+    "48": "icon.png"
   },
   "content_scripts": [
     {
@@ -23,7 +23,12 @@
   ],
   "browser_specific_settings": {
       "gecko": {
-          "update_url": "https://wargesz.chickenkiller.com/archives/product-watcher.json"
+          "update_url": "https://wargesz.chickenkiller.com/archives/product-watcher.json",
+          "data_collection_permissions": {
+              "required": ["websiteContent"],
+              "optional": []
+          },
+          "id": "productWatcher@wargesz.chickenkiller.com"
       }
   }
 }
