@@ -43,6 +43,18 @@ function emag() {
 			navigator.clipboard.writeText(s);
 		});
 		div.append(data);
+		const pairing = document.createElement('button');
+		pairing.innerText = 'Párosítás másol';
+		pairing.addEventListener('click', () => {
+			const rawBrand = document.querySelector('div.disclaimer-section.my-5 > p > a').innerText.toLowerCase();
+			const brand = rawBrand[0].toUpperCase() + rawBrand.slice(1);
+			const re = new RegExp(`(${brand}[, ])|(${brand.toUpperCase()}[, ])`, 'g');
+			const s = brand + '\t' + document.querySelector('h1.page-title').innerText.replace(re, '') + '\t'
+				+ globalThis.location.href.split('/pd/')[1].split('/')[0];
+			console.log(s);
+			navigator.clipboard.writeText(s);
+		});
+		div.append(pairing);
 	} else {
 		const button = document.createElement('button');
 		button.addEventListener('click', () => {
