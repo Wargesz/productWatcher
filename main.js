@@ -1,4 +1,3 @@
-
 function emag() {
 	if (globalThis.location.href.includes('watcher=y')) {
 		const vendor = document.querySelector('div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText;
@@ -15,12 +14,13 @@ function emag() {
 	div.style.left = 0;
 	div.style.bottom = '50%';
 	if (globalThis.location.href.includes('/pd/')) {
+		determinePrice();
 		const data = document.createElement('button');
 		data.innerText = 'Akció másol';
 		data.addEventListener('click', () => {
 			const s = document.querySelector('h1.page-title').innerText + '\t'
 				+ globalThis.location.href + '\t'
-				+ Number.parseInt(document.querySelector('p.product-new-price').innerText.replaceAll('.', ''));
+				+ Number.parseInt(document.querySelector('.watcher-price').innerText.replaceAll('.', ''));
 			navigator.clipboard.writeText(s);
 		});
 		div.append(data);
@@ -32,7 +32,6 @@ function emag() {
 			const re = new RegExp(`(${brand}[, ])|(${brand.toUpperCase()}[, ])`, 'g');
 			const s = brand + '\t' + document.querySelector('h1.page-title').innerText.replace(re, '') + '\t'
 				+ globalThis.location.href.split('/pd/')[1].split('/')[0];
-			console.log(s);
 			navigator.clipboard.writeText(s);
 		});
 		div.append(pairing);
@@ -93,7 +92,6 @@ function arukereso() {
 	const sites = 'alza.hu emag mediamarkt euronics.hu auchan pepita.hu bestbyte';
 	let has = false;
 	for (const e of document.querySelectorAll('.col-logo img.logo-host')) {
-		console.log(e.alt.split(' ')[0].toLowerCase());
 		if (sites.includes(e.alt.split(' ')[0].toLowerCase())) {
 			e.parentElement.parentElement.parentElement.style.border = '0.4em solid blue';
 			has = true;
@@ -109,6 +107,26 @@ function evalProduts() {
 	for (const item of document.querySelectorAll('.product-box-container a.image')) {
 		window.open(item.href + '?watcher=y');
 	}
+}
+
+function determinePrice() {
+	setTimeout(() => {
+		const voucher = document.querySelector('form.main-product-form div[data-voucher]');
+		if (voucher) {
+            const originalPrice = Number.parseInt(document.querySelector('form.main-product-form p.product-new-price').innerText.replaceAll('.', ''));
+            const percent = parseInt(JSON.parse(voucher.getAttribute('data-voucher')).name.split('%')[0].split('-')[1]);
+            const salePrice = Math.floor(originalPrice * (100 - percent) / 100);
+            const div = document.createElement('p');
+            div.innerText = 'Kupon ár:';
+            const p = document.createElement('p');
+            p.classList.add('watcher-price');
+            p.innerText = salePrice;
+            div.append(p);
+            document.querySelector('form.main-product-form p.product-new-price').append(div);
+        } else {
+			document.querySelector('form.main-product-form p.product-new-price').classList.add('watcher-price');
+		}
+	}, 3000);
 }
 
 function start() {
