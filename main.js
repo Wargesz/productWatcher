@@ -14,28 +14,9 @@ function emag() {
 	div.style.position = 'fixed';
 	div.style.left = 0;
 	div.style.bottom = '50%';
-	const id = document.createElement('div');
-	id.innerText = globalThis.location.href.includes('/pd/') ? globalThis.location.href.split('/pd/')[1].split('/')[0] : '';
-	div.style.marginRight = '2em';
-	div.append(id);
-	const counter = document.createElement('div');
-	counter.innerText = 0;
-	div.append(counter);
-	const input = document.createElement('input');
-	input.placeholder = 'akció neve';
-	input.id = 'watcher';
-	input.style.display = 'block';
-	input.addEventListener('input', () => {
-		if (input.value == '') {
-			return;
-		}
-
-		counter.innerText = getItems(input.value).length;
-	});
-	div.append(input);
 	if (globalThis.location.href.includes('/pd/')) {
 		const data = document.createElement('button');
-		data.innerText = 'Adat másol';
+		data.innerText = 'Akció másol';
 		data.addEventListener('click', () => {
 			const s = document.querySelector('h1.page-title').innerText + '\t'
 				+ globalThis.location.href + '\t'
@@ -56,10 +37,25 @@ function emag() {
 		});
 		div.append(pairing);
 	} else {
+		const counter = document.createElement('div');
+		counter.innerText = 0;
+		div.append(counter);
+		const input = document.createElement('input');
+		input.placeholder = 'akció neve';
+		input.id = 'watcher';
+		input.style.display = 'block';
+		input.addEventListener('input', () => {
+			if (input.value == '') {
+				return;
+			}
+
+			counter.innerText = getItems(input.value).length;
+		});
+		div.append(input);
 		const button = document.createElement('button');
 		button.addEventListener('click', () => {
 			if (input.value == '') {
-				alert('empty sale name');
+				alert('nem adtál meg akció nevet');
 				return;
 			}
 
