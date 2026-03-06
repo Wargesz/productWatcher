@@ -67,6 +67,7 @@ function emag() {
 	}
 
 	document.querySelector('body').append(div);
+	highlightEmagProducts();
 }
 
 function getItems(keyword) {
@@ -113,20 +114,32 @@ function determinePrice() {
 	setTimeout(() => {
 		const voucher = document.querySelector('form.main-product-form div[data-voucher]');
 		if (voucher) {
-            const originalPrice = Number.parseInt(document.querySelector('form.main-product-form p.product-new-price').innerText.replaceAll('.', ''));
-            const percent = parseInt(JSON.parse(voucher.getAttribute('data-voucher')).name.split('%')[0].split('-')[1]);
-            const salePrice = Math.floor(originalPrice * (100 - percent) / 100);
-            const div = document.createElement('p');
-            div.innerText = 'Kupon ár:';
-            const p = document.createElement('p');
-            p.classList.add('watcher-price');
-            p.innerText = salePrice;
-            div.append(p);
-            document.querySelector('form.main-product-form p.product-new-price').append(div);
-        } else {
+			const originalPrice = Number.parseInt(document.querySelector('form.main-product-form p.product-new-price').innerText.replaceAll('.', ''));
+			const percent = Number.parseInt(JSON.parse(voucher.dataset.voucher).name.split('%')[0].split('-')[1]);
+			const salePrice = Math.floor(originalPrice * (100 - percent) / 100);
+			const div = document.createElement('p');
+			div.innerText = 'Kupon ár:';
+			const p = document.createElement('p');
+			p.classList.add('watcher-price');
+			p.innerText = salePrice;
+			div.append(p);
+			document.querySelector('form.main-product-form p.product-new-price').append(div);
+		} else {
 			document.querySelector('form.main-product-form p.product-new-price').classList.add('watcher-price');
 		}
 	}, 3000);
+}
+
+function highlightEmagProducts() {
+	setTimeout(async () => {
+		const parser = new DOMParser();
+		for (const card of document.querySelectorAll('.page-container .card-v2')) {
+			const r = await fetch(card.querySelector('a').href);
+			const t = await r.text();
+			const virtualDoc = parser.parseFromString(t, 'text/html');
+			card.style.border = virtualDoc.querySelector('.highlight-box div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2 span').innerText.toLowerCase().includes('emag') ? '0.4em solid blue' : 'thin solid gray';
+		}
+	}, 2000);
 }
 
 function start() {
