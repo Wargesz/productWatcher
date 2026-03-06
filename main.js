@@ -1,3 +1,5 @@
+let highlightSemaphore = false;
+
 function emag() {
 	if (globalThis.location.href.includes('watcher=y')) {
 		const vendor = document.querySelector('div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText;
@@ -36,7 +38,24 @@ function emag() {
 		});
 		div.append(pairing);
 	} else {
+		const observer = new MutationObserver(() => {
+			if (!highlightSemaphore) {
+				highlightSemaphore = true;
+				highlightEmagProducts();
+				const input = document.querySelector('input#watcher');
+				if (input.value == '') {
+					return;
+				}
+
+				document.querySelector('div#watcher-count').innerText = getItems(input.value).length;
+			}
+		});
+
+		observer.observe(document.querySelector('#card_grid'), {
+			childList: true,
+		});
 		const counter = document.createElement('div');
+		counter.id = 'watcher-count';
 		counter.innerText = 0;
 		div.append(counter);
 		const input = document.createElement('input');
@@ -131,15 +150,19 @@ function determinePrice() {
 }
 
 function highlightEmagProducts() {
-	setTimeout(async () => {
-		const parser = new DOMParser();
+	setTimeout(() => {
 		for (const card of document.querySelectorAll('.page-container .card-v2')) {
-			const r = await fetch(card.querySelector('a').href);
-			const t = await r.text();
-			const virtualDoc = parser.parseFromString(t, 'text/html');
-			card.style.border = virtualDoc.querySelector('.highlight-box div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2 span').innerText.toLowerCase().includes('emag') ? '0.4em solid blue' : 'thin solid gray';
+			(async () => {
+				const parser = new DOMParser();
+				const r = await fetch(card.querySelector('a').href);
+				const t = await r.text();
+				const virtualDoc = parser.parseFromString(t, 'text/html');
+                const vendor = virtualDoc.querySelector('.highlight-box div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText.toLowerCase().replace(/(\n|\t| )/g, '');
+				card.style.border = vendor.includes('forgalmazzaa(z):emag') ? '0.4em solid blue' : 'thin solid gray';
+			})();
 		}
 	}, 2000);
+	highlightSemaphore = false;
 }
 
 function start() {
