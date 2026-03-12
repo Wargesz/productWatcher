@@ -1,0 +1,1 @@
+Get the signed xpi [here](https://wargesz.chickenkiller.com/archives/).
