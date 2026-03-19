@@ -1,16 +1,6 @@
 let highlightSemaphore = false;
 
 function emag() {
-	if (globalThis.location.href.includes('watcher=y')) {
-		const vendor = document.querySelector('div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText;
-		if (vendor != 'Forgalmazza a(z): eMAG' && !vendor.toLowerCase().includes('tefal')) {
-			window.close();
-			return;
-		}
-
-		globalThis.location = globalThis.location.href.replace('?watcher=y', '');
-	}
-
 	const div = document.createElement('div');
 	div.style.position = 'fixed';
 	div.style.left = 0;
@@ -78,7 +68,19 @@ function emag() {
 			}
 
 			for (const e of getItems(input.value)) {
-				window.open(e.parentElement.parentElement.parentElement.parentElement.href + '?watcher=y');
+				(async () => {
+					const parser = new DOMParser();
+					const url = e.parentElement.parentElement.parentElement.parentElement.href;
+					const r = await fetch(url);
+					const t = await r.text();
+					const virtualDoc = parser.parseFromString(t, 'text/html');
+					const vendor = virtualDoc.querySelector('div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText.replaceAll('\n', '').replaceAll(' ', '').toLowerCase();
+					if (vendor != 'forgalmazzaa(z):emag' && !vendor.toLowerCase().includes('tefal')) {
+						return;
+					}
+
+					window.open(url);
+				})();
 			}
 		});
 		button.innerText = 'Mind megnyit';
@@ -157,8 +159,12 @@ function highlightEmagProducts() {
 				const r = await fetch(card.querySelector('a').href);
 				const t = await r.text();
 				const virtualDoc = parser.parseFromString(t, 'text/html');
-                const vendor = virtualDoc.querySelector('.highlight-box div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText.toLowerCase().replace(/(\n|\t| )/g, '');
+				const vendor = virtualDoc.querySelector('.highlight-box div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText.toLowerCase().replaceAll(/([ \n\t])/g, '');
 				card.style.border = vendor.includes('forgalmazzaa(z):emag') ? '0.4em solid blue' : 'thin solid gray';
+				const brand = virtualDoc.querySelector('div.disclaimer-section.my-5 > p > a').innerText.toLowerCase();
+				if (brand == 'oem') {
+					card.style.border = '0.4em solid yellow';
+				}
 			})();
 		}
 	}, 2000);
