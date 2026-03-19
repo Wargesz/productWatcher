@@ -1,4 +1,5 @@
 let highlightSemaphore = false;
+let waitGroup = 0;
 
 function emag() {
 	const div = document.createElement('div');
@@ -67,14 +68,18 @@ function emag() {
 				return;
 			}
 
+			document.querySelector('#watcherProgress').hidden = false;
 			for (const e of getItems(input.value)) {
 				(async () => {
+					waitGroup++;
 					const parser = new DOMParser();
 					const url = e.parentElement.parentElement.parentElement.parentElement.href;
 					const r = await fetch(url);
 					const t = await r.text();
 					const virtualDoc = parser.parseFromString(t, 'text/html');
 					const vendor = virtualDoc.querySelector('div.product-page-pricing.product-highlight div.fs-14.fw-semibold.mt-2').innerText.replaceAll('\n', '').replaceAll(' ', '').toLowerCase();
+					waitGroup--;
+					checkWaitGroup();
 					if (vendor != 'forgalmazzaa(z):emag' && !vendor.toLowerCase().includes('tefal')) {
 						return;
 					}
@@ -85,10 +90,23 @@ function emag() {
 		});
 		button.innerText = 'Mind megnyit';
 		div.append(button);
+		const progress = document.createElement('span');
+		progress.id = 'watcherProgress';
+		progress.innerText = '⏳';
+		progress.hidden = true;
+		div.append(progress);
 	}
 
 	document.querySelector('body').append(div);
 	highlightEmagProducts();
+}
+
+function checkWaitGroup() {
+	if (waitGroup != 0) {
+		return;
+	}
+
+	document.querySelector('#watcherProgress').hidden = true;
 }
 
 function getItems(keyword) {
@@ -123,6 +141,32 @@ function arukereso() {
 	if (globalThis.location.href.includes('?watcher=y') && document.querySelector('.col-logo img') && !has) {
 		window.close();
 	}
+}
+
+function alza() {
+	const div = document.createElement('div');
+	div.style.position = 'fixed';
+	div.style.left = 0;
+	div.style.bottom = '50%';
+	if (document.querySelector('#detailItem')) {
+		const akcio = document.createElement('button');
+		akcio.innerText = 'Akció másol';
+        akcio.addEventListener('click', () => {
+            const s = `${document.querySelector('#detailItem h1.h1-placeholder').innerText}\t${window.location.href}\t${parseInt(document.querySelector('.price-box__primary-price').innerText.replaceAll('\xa0', ''))}`;
+			navigator.clipboard.writeText(s);
+        });
+		div.append(akcio);
+		const parositas = document.createElement('button');
+		parositas.innerText = 'Párosítás másol';
+        parositas.addEventListener('click', () => {
+            const brand = document.querySelector('.title-cnt a').innerText.replace('Minden, ami ', '');
+            const model = document.querySelector('.title-cnt h1').innerText.replace(brand, '').replace(/\s+/g, " ");
+			navigator.clipboard.writeText(`${brand}\t${model}`);
+        });
+		div.append(parositas);
+	}
+
+	document.querySelector('body').append(div);
 }
 
 function evalProduts() {
@@ -178,6 +222,10 @@ function start() {
 
 	if (globalThis.location.href.includes('arukereso.hu')) {
 		arukereso();
+	}
+
+	if (globalThis.location.href.includes('alza.hu')) {
+		alza();
 	}
 }
 
