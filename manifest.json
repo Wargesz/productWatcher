@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "productWatcher",
-  "version": "0.5",
+  "version": "0.6",
   "description": "opens products in new tabs with provided sale name or category. copies requried data to clipboard for easier pasting into excel. add blue border if product is vendored by emag, yellow if make is oem. alza.hu has sale and matching data copy buttons now.",
   "icons": {
     "48": "icon.png"
