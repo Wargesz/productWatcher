@@ -1,5 +1,6 @@
 let highlightSemaphore = false;
 let waitGroup = 0;
+let oems = [];
 
 function emag() {
 	const div = document.createElement('div');
@@ -87,14 +88,27 @@ function emag() {
 					window.open(url);
 				})();
 			}
+            checkWaitGroup()
 		});
 		button.innerText = 'Mind megnyit';
+        button.title = 'megnyitja az emag vagy tefal által forgalmazott termékeket';
 		div.append(button);
 		const progress = document.createElement('span');
 		progress.id = 'watcherProgress';
 		progress.innerText = '⏳';
-		progress.hidden = true;
+    	progress.hidden = true;
 		div.append(progress);
+        div.append(document.createElement('br'));
+        const removeOem = document.createElement('button');
+        removeOem.title = 'eltünteti a sárga szegélyű termékeket';
+        removeOem.innerText = 'OEM töröl';
+        removeOem.addEventListener('click', () => {
+            for (const e of oems) {
+                e.parentElement.remove();
+            }
+            oems = [];
+        }) ;
+		div.append(removeOem);
 	}
 
 	document.querySelector('body').append(div);
@@ -197,6 +211,7 @@ function determinePrice() {
 
 function highlightEmagProducts() {
 	setTimeout(() => {
+        oems = [];
 		for (const card of document.querySelectorAll('.page-container .card-v2')) {
 			(async () => {
 				const parser = new DOMParser();
@@ -207,6 +222,7 @@ function highlightEmagProducts() {
 				card.style.border = vendor.includes('forgalmazzaa(z):emag') ? '0.4em solid blue' : 'thin solid gray';
 				const brand = virtualDoc.querySelector('div.disclaimer-section.my-5 > p > a').innerText.toLowerCase();
 				if (brand == 'oem') {
+                    oems.push(card);
 					card.style.border = '0.4em solid yellow';
 				}
 			})();
