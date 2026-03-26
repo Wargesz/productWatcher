@@ -166,7 +166,7 @@ function alza() {
 		const akcio = document.createElement('button');
 		akcio.innerText = 'Akció másol';
         akcio.addEventListener('click', () => {
-            const s = `${document.querySelector('#detailItem h1.h1-placeholder').innerText}\t${window.location.href}\t${parseInt(document.querySelector('.price-box__primary-price').innerText.replaceAll('\xa0', ''))}`;
+            const s = `${document.querySelector('#detailItem h1.h1-placeholder').innerText}\t${window.location.href}\t${parseInt(document.querySelector('.ads-pb__price').innerText.replaceAll('\xa0', ''))}`;
 			navigator.clipboard.writeText(s);
         });
 		div.append(akcio);
